@@ -1,0 +1,52 @@
+/*
+      Write a function, persistence, that takes in a positive parameter num and returns its multiplicative persistence, which is the number of times you must multiply the digits in num until you reach a single digit.
+
+      For example:
+
+        persistence(39) == 3     because 3*9 = 27, 2*7 = 14, 1*4=4
+                                 and 4 has only one digit
+
+        persistence(999) == 4    because 9*9*9 = 729, 7*2*9 = 126,
+                                 1*2*6 = 12, and finally 1*2 = 2
+
+        persistence(4) == 0      because 4 is already a one-digit number
+*/
+
+using System;
+using System.Collections.Generic;
+
+
+public class Persist 
+{
+	public static int Persistence(long n) 
+	{
+		int timesMultiplied = 0; 
+    long tempNumber = n; // used to process through iterations
+    
+    // loop till single digit
+    while (true)
+    {
+      // number is already or has become a single digit
+      if (tempNumber < 10)
+         break;
+      
+      // create array for current iteration of loop
+      string tempNumberString = Convert.ToString(tempNumber);
+      char[] numbers = new char[tempNumberString.Length - 1];
+      numbers = tempNumberString.ToCharArray();
+      
+      // multiply all digits in array
+      int temp = 1;
+      foreach (char num in numbers)
+      {
+        temp = temp * (int)Char.GetNumericValue(num);
+      }
+      
+      // assign number for next iteration 
+      tempNumber = temp;
+      timesMultiplied++;
+    }
+    
+    return timesMultiplied;
+  }
+}
