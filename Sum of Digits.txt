@@ -1,0 +1,24 @@
+/*
+	A digital root is the recursive sum of all the digits in a number. 
+	Given n, take the sum of the digits of n. If that value has 
+	two digits, continue reducing in this way until a single-digit 
+	number is produced. This is only applicable to the natural numbers.
+	
+	Here's how it works (Ruby example given):
+	
+	digital_root(16)
+	=> 1 + 6
+	=> 7
+*/
+
+
+using System;
+using System.Linq;
+
+public class Number
+{
+  public int DigitalRoot(long n)
+  {
+     return (n < 10) ? Convert.ToInt32(n) : DigitalRoot((long)n.ToString().ToCharArray().Sum(num => Char.GetNumericValue(num)));
+ }
+}
