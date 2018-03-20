@@ -1,0 +1,113 @@
+/*
+  Your task in order to complete this Kata is to write a function which 
+  formats a duration, given as a number of seconds, in a human-friendly way.
+  
+  The function must accept a non-negative integer. If it is zero, it 
+  just returns "now". Otherwise, the duration is expressed as a 
+  combination of years, days, hours, minutes and seconds.
+  
+  It is much easier to understand with an example:
+  
+  formatDuration(62)    // returns "1 minute and 2 seconds"
+  formatDuration(3662)  // returns "1 hour, 1 minute and 2 seconds"
+  For the purpose of this Kata, a year is 365 days and a day is 24 hours.
+  
+  Note that spaces are important.
+  
+  Detailed rules
+  The resulting expression is made of components like 4 seconds, 1 year, etc. 
+  In general, a positive integer and one of the valid units of time, separated 
+  by a space. The unit of time is used in plural if the integer is greater 
+  than 1.
+  
+  The components are separated by a comma and a space (", "). Except the 
+  last component, which is separated by " and ", just like it would be 
+  written in English.
+  
+  A more significant units of time will occur before than a least 
+  significant one. Therefore, 1 second and 1 year is not correct, 
+  but 1 year and 1 second is.
+  
+  Different components have different unit of times. So there is not 
+  repeated units like in 5 seconds and 1 second.
+  
+  A component will not appear at all if its value happens to be zero. 
+  Hence, 1 minute and 0 seconds is not valid, but it should be just 1 minute.
+  
+  A unit of time must be used "as much as possible". It means that the 
+  function should not return 61 seconds, but 1 minute and 1 second instead. 
+  Formally, the duration specified by of a component must not be greater 
+  than any valid more significant unit of time.
+*/
+
+using System;
+
+public class HumanTimeFormat{
+  public static string formatDuration(int seconds){
+    // return empty string
+    if (seconds == 0)
+      return "now";
+      
+    // arrays for formatting final string
+    string[] labels = {"year", "day", "hour", "minute", "second"};
+    int[] times = BreakdownTimeIncrements(seconds);
+    
+    return FormatTime(labels, times);
+  }
+  
+  private static int[] BreakdownTimeIncrements(int seconds)
+  {
+    int[] times = new int[5];
+    int secondsPerYear = 365 * 24 * 60 * 60;
+    int years = (int)(seconds / secondsPerYear);
+    times[0] = years;
+    seconds -= years * secondsPerYear;
+     
+    int secondsPerDay = 24 * 60 * 60;
+    int days = (int)(seconds / secondsPerDay);
+    times[1] = days;
+    seconds -= days * secondsPerDay;    
+    
+    int secondsPerHour = 60 * 60;
+    int hours = (int)(seconds / secondsPerHour);
+    times[2] = hours;
+    seconds -= hours * secondsPerHour;
+    
+    int secondsPerMinute = 60;
+    int minutes = (int)(seconds / secondsPerMinute);
+    times[3] = minutes;
+    seconds -= minutes * secondsPerMinute;
+   
+    times[4] = seconds;
+    
+    return times;
+  }
+  
+  private static string FormatTime(string[] labels, int[] times)
+  {
+    string formattedTime = "";
+    for (int i = 0; i < times.Length; i++)
+    {
+      if (times[i] != 0)
+      {
+        // '.' is used as marker for setting grammer
+        formattedTime += "." + times[i] + " " + labels[i];
+        
+        // make label plural
+        if (times[i] != 1)
+          formattedTime += "s";
+      }
+    }
+    
+    // applies grammar logic based on isntructions using '.' as markers
+    formattedTime = formattedTime.Remove(0, 1);
+    
+    int indexPos = formattedTime.LastIndexOf('.');
+    if (indexPos > 0)
+      formattedTime = formattedTime.Remove(indexPos, 1).Insert(indexPos, " and ");
+    
+    formattedTime = formattedTime.Replace(".", ", ");
+    
+    return formattedTime;
+  }
+}
