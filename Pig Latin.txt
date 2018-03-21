@@ -1,0 +1,32 @@
+/*
+  Move the first letter of each word to the end of it, 
+  then add "ay" to the end of the word. 
+  Leave punctuation marks untouched.
+  
+  Examples
+  Kata.PigIt("Pig latin is cool"); // igPay atinlay siay oolcay
+  Kata.PigIt("Hello world !");     // elloHay orldWay !
+*/
+
+using System;
+using System.Text.RegularExpressions;
+using System.Linq;
+using System.Collections.Generic;
+
+
+public class Kata
+{
+  public static string PigIt(string str)
+  {
+    string formatted = "";    
+    
+    str.Split(' ').ToList().ForEach(s => {
+      var temp = s;
+      var sub = temp.Substring(0, 1);
+      temp = temp.Remove(0, 1) + sub + "ay ";
+      formatted += temp;
+    } );
+  
+    return formatted.Trim();
+  } 
+}
