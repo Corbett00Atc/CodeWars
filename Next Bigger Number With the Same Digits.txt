@@ -1,0 +1,89 @@
+/*
+  You have to create a function that takes a positive integer 
+  number and returns the next bigger number formed by the same digits:
+  
+    Kata.NextBiggerNumber(12)==21
+    Kata.NextBiggerNumber(513)==531
+    Kata.NextBiggerNumber(2017)==2071
+  
+  If no bigger number can be composed using those digits, return -1:
+  
+    Kata.NextBiggerNumber(9)==-1
+    Kata.NextBiggerNumber(111)==-1
+    Kata.NextBiggerNumber(531)==-1
+*/
+
+using System.Collections.Generic;
+using System.Linq;
+using System;
+
+/*
+  My methodology to solving this is 3 fold.
+  1. Find what 2 numbers need to be swapped.
+  2. Swap the numbers
+  3. Sort the remaining numbers after first number swapped.
+*/
+
+public class Kata
+{
+    public static long NextBiggerNumber(long n)
+    {
+          List<long> num = n.ToString().ToCharArray().Select(x => (long)char.GetNumericValue(x)).ToList();
+
+          // find the pivot index to do permutation
+          int[] pivotIndexes = GetPivot(num);
+          if (pivotIndexes[0] == -1) { return -1; }
+
+          // perform new permutation
+          num = SwapIndexes(num, pivotIndexes); 
+          num = NewRightSide(num, pivotIndexes);
+
+          return FormatAnswer(num);
+      }
+
+      public static long FormatAnswer(List<long> num)
+      {
+          string valueString = "";
+          foreach (long nums in num)
+              valueString += nums;
+
+          return Int64.Parse(valueString);
+      }
+
+      // sorts numbers after 1st pivot point
+      public static List<long> NewRightSide(List<long> num, int[] indexes)
+      {
+          List<long> rightSide = new List<long>();
+          for (int i = 0; i < num.Count;  i++)
+              if (i > indexes[0])
+                  rightSide.Add(num[i]);
+
+          rightSide.Sort();
+
+          for (int i = 0; i < rightSide.Count; i++)
+              num[num.Count - i - 1] = rightSide[rightSide.Count - i - 1];
+
+          return num;
+      }
+
+      public static List<long> SwapIndexes(List<long> num, int[] indexes)
+      {
+          long temp = num[indexes[0]];
+          num[indexes[0]] = num[indexes[1]];
+          num[indexes[1]] = temp;
+
+          return num;
+      }
+
+      public static int[] GetPivot(List<long> num)
+      {
+          // compares numbers starting from right side
+          for (int n1 = num.Count - 2; n1 > 0 - 1; n1--)
+              for (int n2 = (num.Count - 1); n2 > n1; n2--)
+                  if (num[n2] > num[n1])
+                      return new int[]{ n1, n2 };
+
+          // number already in highet permutation
+          return new int[] { -1 };
+      }
+    }
